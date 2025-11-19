@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onRegisterTap;
+
   const LoginScreen({super.key, required this.onRegisterTap});
 
   @override
@@ -25,17 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    // trim supaya tidak ada spasi
     try {
       await _authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim()
       );
     } catch (e) {
-      if (mounted) { 
-        //kalo error
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("an error occured, please try again later"), backgroundColor: Colors.red)
+          SnackBar(content: Text('an error occured, please try again later'), backgroundColor: Colors.red)
         );
       }
     } finally {
@@ -43,19 +42,19 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  @override
+  @override 
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-      logoIcon: Icons.calendar_month_rounded,
+      logoIcon: Icons.calendar_today_rounded,
       title: 'Welcome Back',
-      subtitle: 'Login to Continue',
+      subtitle: 'Login to continue',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -75,23 +74,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: false,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) => value?.isEmpty ?? true ? 'Please enter your email' : null,
+                      validator: (value) => value?.isEmpty ?? true ? 'Please enter your email' : null ,
                     ),
                     SizedBox(height: 16),
                     AuthTextField(
                       controller: _passwordController,
                       label: 'Password',
-                      icon:  Icons.lock_outline,
+                      icon: Icons.lock_outline,
                       obscureText: _obscurePassword,
-                      // untuk visibility password
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                           color: Colors.blue[600],
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword ),
+                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       ),
-                      validator: (value) => value?.isEmpty ?? true ? 'Please enter password' : null,
+                      validator: (value) => value?.isEmpty ?? true ? 'Please enter your password' : null,
                     ),
                     SizedBox(height: 24),
                     ElevatedButton(
@@ -112,8 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.login_rounded, size: 20,),
-                              SizedBox(width: 8,),
+                              Icon(Icons.login_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
                                 'Login',
                                 style: TextStyle(
@@ -123,19 +121,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               )
                             ],
                           )
-                    ),
+                    )
                   ],
                 ),
               ),
             ),
           ),
-          SizedBox(height: 24,),
+          SizedBox(height: 24),
           TextButton(
             onPressed: widget.onRegisterTap,
             style: TextButton.styleFrom(
               foregroundColor: Colors.white
             ),
-            child: Text("Don't Have An Account? Register"),
+            child: Text(
+              "Don't have an account? Register"
+            ),
           )
         ],
       ),
