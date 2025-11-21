@@ -86,6 +86,5 @@ class ProfileCard extends StatelessWidget {
         ),
       ),
     );
-    return const Placeholder();
   }
 }
