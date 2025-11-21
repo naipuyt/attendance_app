@@ -1,4 +1,6 @@
+
 import 'package:attendence_app/models/attendance_record.dart';
+import 'package:attendence_app/screens/home/widgets/action_button.dart';
 import 'package:attendence_app/screens/home/widgets/attendance_card.dart';
 import 'package:attendence_app/screens/home/widgets/profile_card.dart';
 import 'package:attendence_app/services/auth_services.dart';
@@ -26,33 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
     _listenToTodayRecord();
   }
 
-  // mendengarkan semua hal yg terjadi di homescreen ->attendance record
+  // ini digunakan untuk mendengarkan semua yang terjaid di homescreen
   void _listenToTodayRecord() {
     final user = _authServices.currentUser;
-    if (user != null) {
+    if (user != null) { // kalo usernya ada
       _firestoreService.getTodayRecordStream(user.uid).listen((record) {
-        // masih aktif
         if (mounted) setState(() => _todayRecord = record);
       });
     }
   }
 
-  // utk check in
-  Future<void> _CheckIn({String? photoPath}) async {
+  Future<void> _checkIn({String? photoPath}) async {
     final user = _authServices.currentUser;
-    // kalo user tidak ada di database
-    if (user == null) return null;
+    if (user == null) return;
 
     setState(() => _isLoading = true);
 
-    // percobaan utk take photo ketika check in
     try {
       String? photoKey;
       if (photoPath != null) {
-        photoKey = await _storageServices.uploadAttendancePhoto(
-          photoPath,
-          'CheckIn',
-        );
+        photoKey = await _storageServices.uploadAttendancePhoto(photoPath, 'checkin');
       }
 
       final now = DateTime.now();
@@ -61,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         userId: user.uid,
         checkInTime: now,
         date: DateTime(now.year, now.month, now.day),
-        checkInPhotoPath: photoKey,
+        checkInPhotoPath: photoKey
       );
 
       await _firestoreService.createAttendanceRecord(record);
@@ -70,23 +65,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              photoPath != null
-                  ? 'Check in successfully with photo!'
-                  : 'Check in successfully',
+              photoPath != null 
+                ? 'Check in successfully with photo'
+                : 'Check in successfully'
             ),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
-          ),
+          )
         );
       }
-    } catch (e) {
-      // kalau tidak berhasil check in
+    } catch (e) { // error ga berhasil check in
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error checkhing in: ${e.toString()}'),
+            content: Text('Error checking in: ${e.toString()}'),
             backgroundColor: Colors.red,
-          ),
+          )
         );
       }
     } finally {
@@ -94,108 +88,113 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // check out
   Future<void> _checkOut({String? photoPath}) async {
-    if (_todayRecord == null) return;
+    if (_todayRecord == null) return; 
 
     setState(() => _isLoading = true);
 
     try {
       String? photoKey;
       if (photoPath != null) {
-        photoKey = await _storageServices.uploadAttendancePhoto(
-          photoPath,
-          'checkout',
-        );
+        photoKey = await _storageServices.uploadAttendancePhoto(photoPath, 'checkout');
       }
 
       final updateRecord = AttendanceRecord(
-        id: _todayRecord!.id,
-        userId: _todayRecord!.userId,
-        checkInTime: _todayRecord!.checkInTime,
-        checkOutTime: DateTime.now(),
-        date: _todayRecord!.date,
-        checkInPhotoPath: _todayRecord!.checkInPhotoPath,
-        checkOutPhotoPath: photoKey,
-      );
-
-      await _firestoreService.uploadAttendanceRecord(updateRecord);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              photoPath != null
-                  ? 'Checked Out successfully with photo'
-                  : 'Check Out succesfully',
-            ),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
+          id: _todayRecord!.id,
+          userId: _todayRecord!.userId,
+          checkInTime: _todayRecord!.checkInTime,
+          checkOutTime: DateTime.now(),
+          date: _todayRecord!.date,
+          checkInPhotoPath: _todayRecord!.checkInPhotoPath,
+          checkOutPhotoPath: photoKey
         );
-      }
+
+        await _firestoreService.updateAttendanceRecord(updateRecord);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                photoPath != null
+                  ? 'Checked out successfully with photo!'
+                  : 'Checked out successfully!'
+              ),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            )
+          );
+        }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'error checking out: ${e.toString()}'
+              'Error checking out: ${e.toString()}'
             ),
-          backgroundColor: Colors.red,
+            backgroundColor: Colors.red,
           )
         );
-      } 
-    } finally{
-      if (mounted) setState(()=> _isLoading = false);
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-    backgroundColor: Colors.grey[50],
-    appBar: AppBar(
-      title: Text('Attendance Tracker'),
-      backgroundColor: Colors.blue[700],
-      foregroundColor: Colors.white,
-      elevation: 0,
-      actions: [
-        IconButton(
-          icon: Icon(Icons.history),
-          onPressed: () => ,
-        ),
-        IconButton(
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: Text('Attendance Tracker'),
+        backgroundColor: Colors.blue[700],
+        foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon( Icons.history),
+            onPressed: () {
+              //TODO: go to history screen
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.logout),
-            onPressed: () => ,
+            onPressed: () async => await _authServices.signOut(),
           )
-      ],
-    ),
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.blue[700]!,
-            Colors.grey[50]!
-          ],
-          stops: [0, 0, 0.3]
-        )
+        ],
       ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ProfileCard(),
-            SizedBox(height: 24,),
-            AttendanceCard(todayRecord: _todayRecord,),
-            SizedBox(height: 24,),
-            actions
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blue[700]!,
+              Colors.grey[50]!
+            ],
+            stops: [0, 0, 0.3]  // posisi ditengah2
+          )
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ProfileCard(),
+              SizedBox(height: 24),
+              AttendanceCard(todayRecord: _todayRecord),
+              SizedBox(height: 24),
+              ActionButton(
+                todayRecord: _todayRecord,
+                isLoading: _isLoading,
+                onCheckIn: () => _checkIn(),
+                onCheckOut: () => _checkOut(),
+                onCheckInWithPhoto: (path) => _checkIn(photoPath: path),
+                onCheckOutWithPhoto: (path) => _checkOut(photoPath: path),
+              )
+            ],
+          ),
         ),
       ),
-    ),
-   );
+    );
   }
 }
