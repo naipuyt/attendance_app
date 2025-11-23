@@ -1,7 +1,7 @@
+
 import 'package:attendence_app/models/attendance_record.dart';
 import 'package:attendence_app/screens/home/widgets/photo_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class RecordCard extends StatelessWidget {
@@ -12,6 +12,7 @@ class RecordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isComplete = record.checkOutTime != null;
+
     return Card(
       margin: EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -23,10 +24,10 @@ class RecordCard extends StatelessWidget {
             Divider(height: 24),
             _buildTimeInfo(isComplete),
             if (record.checkInPhotoPath != null || record.checkOutPhotoPath != null)
-            _buildPhotos(),
+              _buildPhotos(),
             if (record.notes != null && record.notes!.isEmpty)
-            _buildNotes()
-          ]
+              _buildNotes(),
+          ],
         ),
       ),
     );
@@ -37,24 +38,23 @@ class RecordCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          // mengambil data tgl aktual
-          DateFormat('EEEE, MMM, d, yyyy').format(record.date),
+          DateFormat('EEEE, MMM d, yyyy').format(record.date),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold
           ),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: isComplete ? Colors.green[100] : Colors.orange[100],
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12)
           ),
           child: Text(
-            isComplete ? 'Complete' : 'In progress',
+            isComplete ? 'Complete' : 'In Progress',
             style: TextStyle(
               color: isComplete ? Colors.green[900] : Colors.orange[900],
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 12
             ),
           ),
         )
@@ -66,58 +66,60 @@ class RecordCard extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child:_InfoColumn(
+          child: _InfoColumn(
             icon: Icons.login,
-            label: 'Check in',
+            label: 'Check In',
             value: DateFormat('hh:mm a').format(record.checkInTime),
           )
         ),
-        if(isComplete)...[
+        if (isComplete) ...[
           Expanded(
             child: _InfoColumn(
               icon: Icons.logout,
-              label: 'check Out',
+              label: 'Check Out',
               value: DateFormat('hh:mm a').format(record.checkOutTime!),
             ),
           ),
-          if(record.totalHours != null)
-          Expanded(
-            child: _InfoColumn(
-              icon: Icons.timer,
-              label: 'Total',
-              value: _formatDuration(record.totalHours!),
-            ),
-          )
+          if (record.totalHours != null)
+            Expanded(
+              child: _InfoColumn(
+                icon: Icons.timer,
+                label: 'Total',
+                value: _formatDuration(record.totalHours!),
+              ),
+            )
         ]
       ],
     );
   }
-  Widget _buildPhotos(){
+
+  Widget _buildPhotos() {
     return Padding(
       padding: EdgeInsets.only(top: 16),
       child: Row(
         children: [
-          if(record.checkInPhotoPath != null)
+          if (record.checkInPhotoPath != null)
             Expanded(
               child: PhotoViewer(
-                label: 'Check-in Photo',
                 photoKey: record.checkInPhotoPath,
+                label: 'Check-in Photo',
               ),
             ),
-            if(record.checkInPhotoPath != null && record.checkOutPhotoPath != null)
-            SizedBox(width: 8,),
-            if(record.checkOutPhotoPath != null)
+            if (record.checkInPhotoPath != null && record.checkOutPhotoPath != null)
+              SizedBox(width: 8),
+            if (record.checkOutPhotoPath != null)
               Expanded(
                 child: PhotoViewer(
                   photoKey: record.checkOutPhotoPath,
-                  label: 'Checked-out Photo',
+                  label: 'Check-out Photo',
                 ),
               )
         ],
       ),
     );
   }
-  Widget _buildNotes(){
+
+  Widget _buildNotes() {
     return Padding(
       padding: EdgeInsets.only(top: 12),
       child: Container(
@@ -129,8 +131,8 @@ class RecordCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.note, size: 16, color: Colors.grey[600],),
-            SizedBox(width: 8,),
+            Icon(Icons.note, size: 16, color: Colors.grey[600]),
+            SizedBox(width: 8),
             Expanded(
               child: Text(
                 record.notes!,
@@ -142,7 +144,8 @@ class RecordCard extends StatelessWidget {
       ),
     );
   }
-  String _formatDuration(Duration duration){
+
+  String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     return '${hours}h ${minutes}m';
@@ -160,20 +163,20 @@ class _InfoColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary,),
-        SizedBox(height: 4,),
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+        SizedBox(height: 4),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: Colors.grey[600]
           ),
         ),
-        SizedBox(height: 2,),
+        SizedBox(height: 2),
         Text(
           value,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold
-            ) ,
+          ),
         )
       ],
     );

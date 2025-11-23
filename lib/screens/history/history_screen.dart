@@ -22,23 +22,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (user == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(
-          'Attendance History'
-        )),
-        body: Center(
-          child: Text(
-            'please login to view history'
-          ),
-        ),
+        appBar: AppBar(title: Text('Attendance History')),
+        body: Center(child: Text('Plaese login to view history')),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Attendance History'
-        ),
-      ),
+      appBar: AppBar(title: Text('Attendance History')),
       body: StreamBuilder<List<AttendanceRecord>>(
         stream: _firestoreService.getAttendanceRecords(user.uid),
         builder: (context, snapshot) {
@@ -74,14 +64,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Icon(Icons.history, size: 80, color: Colors.grey[400]),
           SizedBox(height: 16),
           Text(
-            'No attendance record yet',
+            'No attendance records yet',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Colors.grey[600]
             ),
           ),
           SizedBox(height: 8),
           Text(
-            'Check-in to start tracking ur attendance',
+            'Check in to start tracking your attendace',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.grey[500]
             ),
@@ -91,4 +81,3 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 }
-

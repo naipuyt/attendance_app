@@ -22,7 +22,7 @@ class ProfileCard extends StatelessWidget {
             ]
           )
         ),
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,15 +31,15 @@ class ProfileCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 35, color: Colors.blue[600],),
+                  child: Icon(Icons.person, size: 35, color: Colors.blue[600]),
                 ),
-                SizedBox(width: 16,),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome Back!!',
+                        'Welcome Back!',
                         style: TextStyle(
                           color: Colors.white70,
                           fontSize: 14
@@ -47,44 +47,42 @@ class ProfileCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        user?.email?? 'User',
+                        user?.email ?? 'User',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold
                         ),
                         overflow: TextOverflow.ellipsis,
-                      ),
+                      )
                     ],
                   ),
                 )
               ],
             ),
-            SizedBox(height: 16,),
+            SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12)),
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today, color: Colors.white, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      DateFormat('EEEE, MMM, d, yyyy').format(DateTime.now()),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                ),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_today, color: Colors.white, size: 20,),
-                  SizedBox(width: 8,),
-                  Text(
-                    DateFormat('EEEE, MMM, d, YYYY').format(DateTime.now()),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+            ])
         ),
-      ),
-    );
+      );
   }
 }

@@ -14,7 +14,7 @@ class AttendanceCard extends StatelessWidget {
     final hasCheckedIn = todayRecord != null;
     final hasCheckedOut = todayRecord?.checkOutTime != null;
 
-    final (cardColor, iconColor, iconData, statusText) = _getCardStyle(hasCheckedIn, hasCheckedOut);  // ini biar reusable soalnya ada 3 jenis card (not checkin, currently workin, complete)
+    final (cardColor, iconColor, iconData, statusText) = _getCardStyle(hasCheckedIn, hasCheckedOut);
 
     return Card(
       elevation: 4,
@@ -24,10 +24,10 @@ class AttendanceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           color: cardColor
         ),
-        padding: EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.0),
         child: Column(
           children: [
-            _buildIconCntainer(iconData, iconColor),
+            _buildIconContainer(iconData, iconColor),
             SizedBox(height: 16),
             Text(
               statusText,
@@ -37,7 +37,7 @@ class AttendanceCard extends StatelessWidget {
                 color: iconColor
               ),
             ),
-            if (hasCheckedIn)...[
+            if (hasCheckedIn) ...[
               SizedBox(height: 20),
               _buildTimeDetails(iconColor),
               if (todayRecord!.checkInPhotoPath != null || todayRecord!.checkOutPhotoPath != null)
@@ -51,7 +51,7 @@ class AttendanceCard extends StatelessWidget {
 
   (Color, Color, IconData, String) _getCardStyle(bool hasCheckedIn, bool hasCheckedOut) {
     if (!hasCheckedIn) {
-      return (Colors.orange[50]!, Colors.orange[600]!, Icons.access_time_rounded, 'Not Check In');
+      return (Colors.orange[50]!, Colors.orange[600]!, Icons.access_time_rounded, 'Not Checked In');
     } else if (hasCheckedOut) {
       return (Colors.green[50]!, Colors.green[600]!, Icons.check_circle_rounded, 'Work Complete');
     } else {
@@ -59,7 +59,7 @@ class AttendanceCard extends StatelessWidget {
     }
   }
 
-  Widget _buildIconCntainer(IconData icon, Color color) {
+  Widget _buildIconContainer(IconData icon, Color color) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -82,23 +82,23 @@ class AttendanceCard extends StatelessWidget {
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12)
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
           _TimeRow(
             icon: Icons.login_rounded,
-            label: 'check_in',
+            label: 'Check In',
             value: DateFormat('hh:mm a').format(todayRecord!.checkInTime),
             color: color,
           ),
           if (todayRecord!.checkOutTime != null) ...[
             SizedBox(height: 12),
             _TimeRow(
-              color: color,
               icon: Icons.logout_rounded,
-              label: 'check_out',
+              label: 'Check Out',
               value: DateFormat('hh:mm a').format(todayRecord!.checkOutTime!),
+              color: color,
             )
           ]
         ],
@@ -112,14 +112,14 @@ class AttendanceCard extends StatelessWidget {
       child: Row(
         children: [
           if (todayRecord!.checkInPhotoPath != null)
-          Expanded(
-            child: PhotoViewer(
-              photoKey: todayRecord!.checkInPhotoPath,
-              label: 'Check-In',
+            Expanded(
+              child: PhotoViewer(
+                photoKey: todayRecord!.checkInPhotoPath,
+                label: 'Check-In',
+              ),
             ),
-          ),
           if (todayRecord!.checkInPhotoPath != null && todayRecord!.checkOutPhotoPath != null)
-            SizedBox(width: 8),
+            SizedBox(width:8 ),
           if (todayRecord!.checkOutPhotoPath != null)
             Expanded(
               child: PhotoViewer(

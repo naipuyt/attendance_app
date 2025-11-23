@@ -9,7 +9,7 @@ class StorageServices {
   final DatabaseReference _database = FirebaseDatabase.instanceFor(
     app: FirebaseDatabase.instance.app,
     databaseURL:
-        'https://attendance-app-5cbda-default-rtdb.asia-southeast1.firebasedatabase.app/', // database url yang diambil dari realtime database di firebase
+        'https://attendance-app-a8116-default-rtdb.asia-southeast1.firebasedatabase.app/', // database url yang diambil dari realtime database di firebase
   ).ref();
 
   // upload photo to firebase realtime database as Base64 (string)
@@ -72,6 +72,7 @@ class StorageServices {
       final snapShot = await _database
           .child('attendance_photos')
           .child(user.uid)
+          .child(photoKey) // harus pakai photoKey
           .child('data')
           .get();
 
@@ -86,17 +87,15 @@ class StorageServices {
   }
 
   // delete photo from firebase realtime
-  Future<void> deletePhoto(String photoKey) async{
+  Future<void> deletePhoto(String photoKey) async {
     try {
       final user = _auth.currentUser;
-      if(user == null) return;
+      if (user == null) return;
       await _database
-        .child('attendance_photos')
-        .child(user.uid)
-        .child(photoKey)
-        .remove();
-    } catch (e) {
-      
-    }
+          .child('attendance_photos')
+          .child(user.uid)
+          .child(photoKey)
+          .remove();
+    } catch (e) {}
   }
 }

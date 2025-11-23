@@ -1,5 +1,6 @@
 
 import 'package:attendence_app/models/attendance_record.dart';
+import 'package:attendence_app/screens/history/history_screen.dart';
 import 'package:attendence_app/screens/home/widgets/action_button.dart';
 import 'package:attendence_app/screens/home/widgets/attendance_card.dart';
 import 'package:attendence_app/screens/home/widgets/profile_card.dart';
@@ -152,9 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: Icon( Icons.history),
-            onPressed: () {
-              //TODO: go to history screen
-            },
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => HistoryScreen())
+            )
           ),
           IconButton(
             icon: Icon(Icons.logout),
@@ -171,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Colors.blue[700]!,
               Colors.grey[50]!
             ],
-            stops: [0, 0, 0.3]  // posisi ditengah2
+            stops: [0.0, 0.3]  // posisi ditengah2
           )
         ),
         child: SingleChildScrollView(
